@@ -396,9 +396,9 @@ table.horaires td+td{text-align:right;font-family:var(--f-mono);font-size:.84rem
   function moulure(cx,cy,w,h,z){ var e=.045; bx(w,e,.05,boisC,cx,cy+h/2,z,dev); bx(w,e,.05,boisS,cx,cy-h/2,z,dev); bx(e,h,.05,boisC,cx-w/2,cy,z,dev); bx(e,h,.05,boisS,cx+w/2,cy,z,dev);
     bx(w-.18,h-.18,.03,bois,cx,cy,z+.005,dev); }
   /* le bâtiment : enduit clair, bardage rouge à gauche */
-  bx(17,8,.3,st({color:0xd4c19c,roughness:.95}),0,Y0+3.6,-.95,dev);
+  bx(17,8,.3,st({color:0xe4d7bd,roughness:.95}),0,Y0+3.6,-.95,dev);
   var bardT=toile2(256,256,function(x,w,h){ for(var i=0;i<16;i++){ var g=x.createLinearGradient(i*16,0,i*16+16,0); g.addColorStop(0,'#7e1f18'); g.addColorStop(.5,'#b5362b'); g.addColorStop(1,'#7e1f18'); x.fillStyle=g; x.fillRect(i*16,0,16,h); } });
-  bardT.wrapS=bardT.wrapT=T.RepeatWrapping; bardT.repeat.set(3,4); bx(3.4,6.6,.25,st({map:bardT,roughness:.55,metalness:.3}),-6.45,Y0+3.3,-.5,dev);
+  bardT.wrapS=bardT.wrapT=T.RepeatWrapping;
   /* coffrage de la devanture */
   bx(8.9,1.08,.3,bois,0,Y0+.54,0,dev); bx(8.9,.86,.32,bois,0,Y0+4.08,0,dev);
   bx(9.3,.12,.62,bois,0,Y0+4.56,.12,dev); bx(9.1,.07,.48,boisC,0,Y0+4.47,.08,dev); bx(9.4,.07,.7,bois,0,Y0+4.66,.15,dev);
@@ -476,10 +476,61 @@ table.horaires td+td{text-align:right;font-family:var(--f-mono);font-size:.84rem
   var lumInt=new T.PointLight(0xffd6a0,1.1,5,1.6); lumInt.position.set(1.15,Y0+3.3,-.2); dev.add(lumInt);
   /* barrière rouge, trottoir */
   var rouge=st({color:0xc8241c,roughness:.45});
-  for(var r0=0;r0<8;r0++) bx(.12,1.4,.07,rouge,5.2+r0*.26,Y0+.7,1.0,dev); bx(2.2,.1,.08,rouge,6.1,Y0+1.25,1.04,dev); bx(2.2,.1,.08,rouge,6.1,Y0+.35,1.04,dev);
-  var solT=toile2(512,512,function(x,w,h){ x.fillStyle='#a9a399'; x.fillRect(0,0,w,h); x.strokeStyle='rgba(70,64,58,.45)'; x.lineWidth=2; for(var i=0;i<=4;i++){ x.beginPath(); x.moveTo(i*128,0); x.lineTo(i*128,h); x.stroke(); x.beginPath(); x.moveTo(0,i*128); x.lineTo(w,i*128); x.stroke(); }
-    for(var k=0;k<4000;k++){ x.fillStyle='rgba(0,0,0,'+(rnd()*.07)+')'; x.fillRect(rnd()*w,rnd()*h,2,2); } }); solT.wrapS=solT.wrapT=T.RepeatWrapping; solT.repeat.set(8,4);
-  var sol=new T.Mesh(new T.PlaneGeometry(40,20),st({map:solT,roughness:.9,color:0x8c867e})); sol.rotation.x=-Math.PI/2; sol.position.set(0,Y0,4); dev.add(sol);
+  for(var r0=0;r0<9;r0++) bx(.12,1.3,.07,rouge,5.0+r0*.27,Y0+1.65,1.1,dev); bx(2.4,.1,.08,rouge,6.1,Y0+2.15,1.14,dev); bx(2.4,.1,.08,rouge,6.1,Y0+1.25,1.14,dev);
+  var solT=toile2(512,512,function(x,w,h){ x.fillStyle='#b3aca1'; x.fillRect(0,0,w,h); x.strokeStyle='rgba(70,64,58,.45)'; x.lineWidth=2; for(var i=0;i<=4;i++){ x.beginPath(); x.moveTo(i*128,0); x.lineTo(i*128,h); x.stroke(); x.beginPath(); x.moveTo(0,i*128); x.lineTo(w,i*128); x.stroke(); }
+    for(var k=0;k<4000;k++){ x.fillStyle='rgba(0,0,0,'+(rnd()*.07)+')'; x.fillRect(rnd()*w,rnd()*h,2,2); } }); solT.wrapS=solT.wrapT=T.RepeatWrapping; solT.repeat.set(28,18);
+  var sol=new T.Mesh(new T.PlaneGeometry(140,90),st({map:solT,roughness:.9,color:0x8c867e})); sol.rotation.x=-Math.PI/2; sol.position.set(0,Y0,20); dev.add(sol);
+  /* ---------- la place autour : l'immeuble, la tour rouge, le porche, les voisins, les arbres ---------- */
+  var enduit=st({color:0xe4d7bd,roughness:.95}), blancM=st({color:0xf1eee6,roughness:.85}), vitreSombre=st({color:0x2a3440,roughness:.15,metalness:.4}), grisM=st({color:0x8d9196,metalness:.5,roughness:.5});
+  bx(17,6,.3,enduit,0,Y0+7.6,-.95,dev); bx(17.4,.25,.9,blancM,0,Y0+10.65,-.75,dev);
+  [[-3.2,6.4,0],[0,6.4,1],[3.2,6.4,0],[-3.2,8.9,1],[0,8.9,0],[3.2,8.9,0],[6.4,6.4,0],[6.4,8.9,1]].forEach(function(f){
+    bx(1.05,1.25,.08,blancM,f[0],Y0+f[1],-.76,dev); bx(.85,1.05,.06,vitreSombre,f[0],Y0+f[1],-.71,dev); bx(.06,1.05,.07,blancM,f[0],Y0+f[1],-.69,dev);
+    if(f[2]){ bx(1.25,.05,.35,st({color:0x9a2a22,roughness:.5}),f[0],Y0+f[1]-.25,-.55,dev); for(var i=0;i<6;i++) bx(.03,.45,.03,st({color:0x9a2a22}),f[0]-.55+i*.22,Y0+f[1]-.48,-.4,dev); } });
+  bx(.9,.7,.04,st({color:0xa7a9ab,roughness:.6}),-1.2,Y0+5.3,-.77,dev);
+  /* fin auvent gris et quatre spots sur potence */
+  bx(9.6,.05,.55,grisM,0,Y0+4.78,.3,dev);
+  [1.0,3.1].forEach(function(x){ bx(.04,.04,.5,laiton,x,Y0+5.15,.35,dev); var tl=new T.Mesh(new T.CylinderGeometry(.08,.1,.24,16),st({color:0x9aa0a6,metalness:.7,roughness:.3})); tl.position.set(x,Y0+5.08,.62); tl.rotation.x=.9; dev.add(tl);
+    var am=new T.MeshBasicMaterial({color:0x2a2018,toneMapped:false}); var b=new T.Mesh(new T.CircleGeometry(.065,16),am); b.position.set(x,Y0+5.0,.68); b.rotation.x=-.65; dev.add(b); ampM.push(am); });
+  /* la grande tour bardée de rouge, coiffée de verre */
+  var tourT=toile2(512,256,function(x,w,h){ for(var i=0;i<32;i++){ var g=x.createLinearGradient(i*16,0,i*16+16,0); g.addColorStop(0,'#6d2224'); g.addColorStop(.5,'#94363a'); g.addColorStop(1,'#6d2224'); x.fillStyle=g; x.fillRect(i*16,0,16,h); } });
+  tourT.wrapS=tourT.wrapT=T.RepeatWrapping; tourT.repeat.set(4,3);
+  var tour=new T.Mesh(new T.CylinderGeometry(1.7,1.7,6.2,40),st({map:tourT,roughness:.6})); tour.position.set(-7.0,Y0+4.6,-.6); dev.add(tour);
+  var tourVerre=new T.Mesh(new T.CylinderGeometry(1.72,1.72,1.6,40,1,true),new T.MeshStandardMaterial({color:0xa9c3d4,transparent:true,opacity:.35,roughness:.05,metalness:.4,side:T.DoubleSide})); tourVerre.position.set(-7.0,Y0+8.5,-.6); dev.add(tourVerre);
+  for(var m0=0;m0<8;m0++){ var a=m0/8*Math.PI*2; bx(.06,1.6,.06,grisM,-7.0+Math.cos(a)*1.72,Y0+8.5,-.6+Math.sin(a)*1.72,dev); }
+  var toitT=new T.Mesh(new T.CylinderGeometry(1.9,1.9,.12,40),grisM); toitT.position.set(-7.0,Y0+9.36,-.6); dev.add(toitT);
+  bx(1.2,1.5,1.0,blancM,-5.4,Y0+.75,-.2,dev);
+  /* muret blanc, barrière rouge et gravier à gauche */
+  bx(3.2,.85,.9,blancM,-7.4,Y0+.42,1.8,dev); bx(3.0,.06,.7,st({color:0x9b9a96,roughness:1}),-7.4,Y0+.87,1.8,dev);
+  for(var r1=0;r1<9;r1++) bx(.1,.9,.06,rouge,-8.6+r1*.3,Y0+1.3,1.55,dev); bx(2.8,.08,.07,rouge,-7.4,Y0+1.62,1.56,dev);
+  /* le porche en retrait à droite, sous un bardage rouge arrondi, et sa jardinière */
+  bx(2.2,3.4,.1,st({color:0x3a2a22,roughness:.8}),5.95,Y0+1.7,-.9,dev);
+  var porcheT=new T.Mesh(new T.CylinderGeometry(1.25,1.25,2.4,24,1,true,Math.PI,Math.PI),st({map:tourT,roughness:.6,side:T.DoubleSide})); porcheT.rotation.z=Math.PI/2; porcheT.scale.set(1,1,.5); porcheT.position.set(5.95,Y0+4.4,-.2); dev.add(porcheT);
+  for(var m1=0;m1<3;m1++) bx(2.2,.18,.4,blancM,5.95,Y0+.09+m1*.18,-.15-m1*.3,dev);
+  bx(2.6,1.0,.9,blancM,6.1,Y0+.5,1.35,dev);
+  /* réverbère bleu au premier plan */
+  var bleuNuit=st({color:0x223050,metalness:.4,roughness:.5});
+  var mat0=new T.Mesh(new T.CylinderGeometry(.07,.09,5.2,12),bleuNuit); mat0.position.set(-6.0,Y0+2.6,4.2); dev.add(mat0);
+  var chap=new T.Mesh(new T.CylinderGeometry(.55,.2,.18,24),bleuNuit); chap.position.set(-6.0,Y0+5.25,4.2); dev.add(chap);
+  var lanterne=new T.Mesh(new T.CylinderGeometry(.2,.2,.08,20),new T.MeshBasicMaterial({color:0xfff2d8,toneMapped:false})); lanterne.position.set(-6.0,Y0+5.13,4.2); dev.add(lanterne); ampM.push(lanterne.material);
+  /* le reste de la place : maison orangée, boutiques voisines sous arcades, arbres, banc */
+  var maison=new T.Group(); maison.position.set(-13.5,Y0,-3); dev.add(maison);
+  bx(5,3.2,4,st({color:0xe5a27c,roughness:.9}),0,1.6,0,maison); var tt=new T.Mesh(new T.ConeGeometry(3.7,1.6,4),st({color:0x9c4a2e,roughness:.85})); tt.rotation.y=Math.PI/4; tt.position.y=4.0; tt.scale.set(1,1,.8); maison.add(tt);
+  bx(1.2,1.0,.06,blancM,-1.2,1.9,2.02,maison); bx(1.1,2.1,.06,st({color:0xf1eee6}),1.0,1.05,2.02,maison);
+  function voisine(x,coul,bande){ var g=new T.Group(); g.position.set(x,Y0,-.2); dev.add(g);
+    bx(3.6,3.9,.12,coul,0,1.95,-.05,g); bx(3.2,2.7,.04,vitreSombre,0,1.55,.03,g); for(var i=0;i<4;i++) bx(.07,2.7,.08,blancM,-1.6+i*1.07,1.55,.06,g);
+    bx(3.4,.55,.14,bande,0,3.35,.08,g); return g; }
+  voisine(9.4,blancM,st({color:0x1f1f22,roughness:.4})); voisine(13.2,blancM,st({color:0x2f7a4a,roughness:.5}));
+  bx(9.5,6,.3,enduit,12.9,Y0+6.9,-.5,dev);
+  [8.2,10.6,13.0,15.4].forEach(function(x){ var c=new T.Mesh(new T.CylinderGeometry(.18,.18,4.4,16),st({color:0xe9dcc0,roughness:.8})); c.position.set(x,Y0+2.2,1.3); dev.add(c); });
+  bx(9.0,.35,2.0,enduit,11.8,Y0+4.55,.4,dev);
+  function arbre(x,z,s){ var g=new T.Group(); g.position.set(x,Y0,z); g.scale.setScalar(s); dev.add(g);
+    var tr=new T.Mesh(new T.CylinderGeometry(.16,.24,3.4,8),st({color:0x8d7f6c,roughness:1})); tr.position.y=1.7; g.add(tr);
+    [[0,4.1,0,1.5],[.9,3.7,.3,1.1],[-.9,3.8,-.2,1.15],[.2,4.7,-.4,1.0],[-.3,3.6,.8,.95]].forEach(function(b){ var f=new T.Mesh(new T.IcosahedronGeometry(b[3],1),st({color:0x5f7d3a,roughness:.9,flatShading:true})); f.position.set(b[0],b[1],b[2]); g.add(f); }); }
+  arbre(-10.5,5.5,1.1); arbre(9.5,6.5,1.2); arbre(-15,1,1.0); arbre(16,2.5,1.1);
+  var banc=new T.Group(); banc.position.set(7.4,Y0,6.2); banc.rotation.y=-.35; dev.add(banc); var bancB=st({color:0x8a5a3a,roughness:.7});
+  bx(2.0,.08,.45,bancB,0,.48,0,banc); bx(2.0,.4,.06,bancB,0,.8,-.22,banc); [-.85,.85].forEach(function(x){ bx(.06,.48,.4,grisM,x,.24,0,banc); });
+  var plaque=new T.Mesh(new T.PlaneGeometry(1.0,.7),st({color:0x5a5852,metalness:.4,roughness:.6})); plaque.rotation.x=-Math.PI/2; plaque.position.set(-2.6,Y0+.01,3.1); dev.add(plaque);
+
   var hemiD=new T.HemisphereLight(0xffffff,0x40302a,.4); S.add(hemiD); var soleil=new T.DirectionalLight(0xffe0b8,0); soleil.position.set(7,6,8); S.add(soleil);
   function devanture(jour,x){
     var on=ss(.0,.04,x+.04);
@@ -583,8 +634,8 @@ table.horaires td+td{text-align:right;font-family:var(--f-mono);font-size:.84rem
 
   /* images clés de la caméra */
   var K=[
-    {p:0,    c:[2.4,.3,13.5], t:[0,0,FZ]},
-    {p:.12,  c:[0,.3,9.4],    t:[0,.2,FZ]},
+    {p:0,    c:[3.2,1.4,15.5], t:[0,1.0,FZ]},
+    {p:.12,  c:[.6,.6,10.2],  t:[0,.6,FZ]},
     {p:.22,  c:[.9,.4,5.4],   t:[1.1,.35,FZ]},
     {p:.29,  c:[1.2,.6,-1.7], t:[1.15,.55,FZ-.6]},
     {p:.326, c:[1.2,.6,-1.7], t:[1.15,.55,FZ-.6]},
